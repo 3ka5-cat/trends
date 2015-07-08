@@ -12,7 +12,7 @@ DATABASES = {
     },
 }
 
-LOGGING = create_logging_dict(location('../../logs/test'))
+LOGGING = create_logging_dict(location('../logs/test'))
 
 ALLOWED_HOSTS = []
 

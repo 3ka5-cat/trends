@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 
 from conf.default import *
 
-SECRET_KEY = ''
+SECRET_KEY = get_env_variable('TRENDS_PROD_SECRET_KEY')
 
 DATABASES = {
     'default': {
@@ -31,4 +31,4 @@ LOG_ROOT = create_logging_dict(location('../logs'))
 
 ALLOWED_HOSTS = []
 
-RAVEN_CONFIG['dsn'] = ''
+RAVEN_CONFIG['dsn'] = get_env_variable('TRENDS_PROD_RAVEN_DSN')

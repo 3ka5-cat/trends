@@ -2,21 +2,26 @@
 
 from __future__ import unicode_literals
 
-# Default settings are secure/production-ready.
-# Debug settings need to be enabled locally in conf/local.py
 import os
 import sys
+from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import pgettext_lazy
+
+
+def get_env_variable(name):
+    try:
+        return os.environ[name]
+    except KeyError:
+        msg = "Set the {name} environment variable".format(name=name)
+        raise ImproperlyConfigured(msg)
 
 location = lambda *path: os.path.join(
     os.path.dirname(os.path.realpath(__file__)), '..', *path)
 
+
 DEBUG = False
-
 ADMINS = []
-
 MANAGERS = ADMINS
-
 ATOMIC_REQUESTS = True
 
 # Local time zone for this installation. Choices can be found here:
@@ -83,9 +88,6 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 )
 
-# Make this unique, and don't share it with anybody.
-SECRET_KEY = ''
-
 # Use cached template loading by default
 TEMPLATE_LOADERS = (
     ('django.template.loaders.cached.Loader', (
@@ -146,7 +148,7 @@ SESSION_COOKIE_HTTPONLY = True
 
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
     }
 }
 
@@ -172,6 +174,9 @@ def create_logging_dict(root):
         'filters': {
             'require_debug_false': {
                 '()': 'django.utils.log.RequireDebugFalse',
+            },
+            'require_debug_true': {
+                '()': 'django.utils.log.RequireDebugTrue',
             },
         },
         'handlers': {
