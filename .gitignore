@@ -1,0 +1,36 @@
+# temporary files
+*.swp
+*.pyc
+*.swo
+*.swn
+*.*~
+.DS_Store
+*.~lock*
+
+# IDEs (boo)
+*.sqlite3
+.project
+.pydevproject
+.settings
+.idea
+
+# testing
+.coverage
+coverage.xml
+nosetests.xml
+htmlcov/*
+
+# uploads
+www/public/media
+# collected static
+www/public/static
+
+# local config
+www/conf/local.py
+
+logs
+
+www/dump
+
+# node
+www/node_modules

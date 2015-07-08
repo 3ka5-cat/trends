@@ -1,0 +1,11 @@
+Django==1.7.8
+# cache
+django-redis==4.2.0
+
+# production
+raven==5.4.1
+
+# Development packages
+django-debug-toolbar==1.3.2
+django-extensions==1.5.5
+flake8==2.4.1
