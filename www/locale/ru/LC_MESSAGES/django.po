@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-09 14:17+0300\n"
+"POT-Creation-Date: 2015-07-09 14:25+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,25 +25,33 @@ msgid "Russian"
 msgstr "Русский"
 
 #: core/apps.py:10
+#, fuzzy
+#| msgid "Core"
+msgctxt "Application verbose name"
 msgid "Core"
 msgstr "Ядро"
 
 #: core/models.py:9
+msgctxt "Skill field"
 msgid "Name"
 msgstr "Название"
 
 #: core/models.py:11
+msgctxt "Skill field"
 msgid "Hits"
 msgstr "Количество попаданий"
 
 #: core/models.py:15
+msgctxt "Skill verbose name"
 msgid "Skill"
 msgstr "Навык"
 
 #: core/models.py:16
+msgctxt "Skill verbose plural name"
 msgid "Skills"
 msgstr "Навыки"
 
 #: hh/apps.py:10
+msgctxt "Application verbose name"
 msgid "hh.ru"
 msgstr ""
