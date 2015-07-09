@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-09 13:22+0300\n"
+"POT-Creation-Date: 2015-07-09 14:17+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -43,3 +43,7 @@ msgstr "Навык"
 #: core/models.py:16
 msgid "Skills"
 msgstr "Навыки"
+
+#: hh/apps.py:10
+msgid "hh.ru"
+msgstr ""

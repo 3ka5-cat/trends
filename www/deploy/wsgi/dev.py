@@ -7,9 +7,10 @@ sys.stdout = sys.stderr
 os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 os.environ['DJANGO_CONF'] = 'conf.dev'
 os.environ["CELERY_LOADER"] = "django"
+from dj_static import Cling
 from django.core.wsgi import get_wsgi_application
 
-_application = get_wsgi_application()
+_application = Cling(get_wsgi_application())
 
 
 def application(environ, start_response):

@@ -29,6 +29,7 @@ www/public/static
 www/conf/local.py
 
 logs
+*.mo
 
 www/dump
 
