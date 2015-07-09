@@ -6,6 +6,7 @@ psycopg2==2.6.1
 # heroku
 dj-database-url==0.3.0
 dj-static==0.0.6
+django-toolbelt
 
 # production
 raven==5.4.1
