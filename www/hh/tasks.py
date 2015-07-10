@@ -5,6 +5,7 @@ from celery import Task
 from django.db import transaction
 from core.models import Vacancy, Skill
 from . import api
+from celery_conf import app as celery_app
 
 
 class CollectingTask(Task):
@@ -12,8 +13,7 @@ class CollectingTask(Task):
     new_vacancies = []
     unique_skills = {}
 
-    def run(self, source, *args, **kwargs):
-        self.source = source
+    def run(self, *args, **kwargs):
         self.collect_data()
 
     def collect_data(self):
@@ -77,3 +77,4 @@ class CollectingTask(Task):
                                                                             external_id__in=vacancies)))
 
 
+collect = celery_app.tasks[CollectingTask.name]
