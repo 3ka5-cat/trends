@@ -23,4 +23,23 @@ class Migration(migrations.Migration):
             },
             bases=(models.Model,),
         ),
+        migrations.CreateModel(
+            name='Vacancy',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('source', models.CharField(max_length=255, verbose_name='Source')),
+                ('external_id', models.CharField(max_length=255, verbose_name='ID in source system')),
+                ('description', models.TextField(verbose_name='Description', blank=True)),
+                ('skills', models.ManyToManyField(to='core.Skill', null=True, verbose_name='Skills', blank=True)),
+            ],
+            options={
+                'verbose_name': 'Vacancy',
+                'verbose_name_plural': 'Vacancies',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.AlterUniqueTogether(
+            name='vacancy',
+            unique_together=set([('source', 'external_id')]),
+        ),
     ]

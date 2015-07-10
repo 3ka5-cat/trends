@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-09 14:25+0300\n"
+"POT-Creation-Date: 2015-07-10 00:17+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,8 +25,6 @@ msgid "Russian"
 msgstr "Русский"
 
 #: core/apps.py:10
-#, fuzzy
-#| msgid "Core"
 msgctxt "Application verbose name"
 msgid "Core"
 msgstr "Ядро"
@@ -50,6 +48,36 @@ msgstr "Навык"
 msgctxt "Skill verbose plural name"
 msgid "Skills"
 msgstr "Навыки"
+
+#: core/models.py:23
+msgctxt "Vacancy field"
+msgid "Source"
+msgstr "Источник"
+
+#: core/models.py:25
+msgctxt "Vacancy field"
+msgid "ID in source system"
+msgstr "ID в источнике"
+
+#: core/models.py:27
+msgctxt "Vacancy field"
+msgid "Description"
+msgstr "Описание"
+
+#: core/models.py:30
+msgctxt "Vacancy field"
+msgid "Skills"
+msgstr "Навыки"
+
+#: core/models.py:33
+msgctxt "Vacancy verbose name"
+msgid "Vacancy"
+msgstr "Вакансия"
+
+#: core/models.py:34
+msgctxt "Vacancy verbose plural name"
+msgid "Vacancies"
+msgstr "Вакансии"
 
 #: hh/apps.py:10
 msgctxt "Application verbose name"
