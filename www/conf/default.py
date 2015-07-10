@@ -242,3 +242,7 @@ LANGUAGES = [
 LOCALE_PATHS = (
     location('locale'),
 )
+
+# celery
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_ACCEPT_CONTENT = ['json']
