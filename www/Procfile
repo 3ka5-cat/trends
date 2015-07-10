@@ -1,2 +1,2 @@
-web: gunicorn deploy.wsgi.dev --log-file -
-worker: celery worker --app=celery_conf
+# use honcho for running worker and web on single dyno
+web: honcho -f ProcfileHoncho start

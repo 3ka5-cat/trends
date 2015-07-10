@@ -16,3 +16,5 @@ ALLOWED_HOSTS = ['hh-trends.herokuapp.com', 'www.hh-trends.herokuapp.com', ]
 RAVEN_CONFIG['dsn'] = get_env_variable('TRENDS_DEV_RAVEN_DSN')
 
 DEBUG = True
+
+BROKER_URL = get_env_variable('CLOUDAMQP_URL')

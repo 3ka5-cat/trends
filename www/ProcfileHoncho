@@ -1,0 +1,2 @@
+web: gunicorn deploy.wsgi.dev --log-file -
+worker: celery worker --app=celery_conf --beat -l info
