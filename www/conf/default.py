@@ -6,6 +6,7 @@ import os
 import sys
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import pgettext_lazy
+from celery.schedules import crontab
 
 
 def get_env_variable(name):
@@ -246,3 +247,10 @@ LOCALE_PATHS = (
 # celery
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_ACCEPT_CONTENT = ['json']
+
+CELERYBEAT_SCHEDULE = {
+    'poll-hh': {
+        'task': 'hh.tasks.CollectingTask',
+        'schedule': crontab(hour=0, minute=0),
+    },
+}
