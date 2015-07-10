@@ -42,7 +42,8 @@ class CollectingTask(Task):
 
     def filter_data(self, vacancy_ids):
         # filter only not existing ids
-        existing_vacancies = Vacancy.objects.filter(source=self.source, external_id__in=vacancy_ids)
+        existing_vacancies = Vacancy.objects.filter(source=self.source,
+                                                    external_id__in=vacancy_ids).values_list('external_id', flat=True)
         return [vacancy_id for vacancy_id in vacancy_ids if vacancy_id not in existing_vacancies]
 
     def transform_data(self, vacancy):
