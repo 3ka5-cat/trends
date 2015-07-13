@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-10 00:17+0300\n"
+"POT-Creation-Date: 2015-07-13 15:38+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,10 +19,15 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: conf/default.py:238
+#: conf/default.py:241
 msgctxt "Language setting value"
 msgid "Russian"
 msgstr "Русский"
+
+#: core/admin.py:29
+msgctxt "Skill admin column name"
+msgid "Hits"
+msgstr "Количество попаданий"
 
 #: core/apps.py:10
 msgctxt "Application verbose name"
@@ -34,50 +39,80 @@ msgctxt "Skill field"
 msgid "Name"
 msgstr "Название"
 
-#: core/models.py:11
-msgctxt "Skill field"
-msgid "Hits"
-msgstr "Количество попаданий"
-
-#: core/models.py:15
+#: core/models.py:13
 msgctxt "Skill verbose name"
 msgid "Skill"
 msgstr "Навык"
 
-#: core/models.py:16
+#: core/models.py:14
 msgctxt "Skill verbose plural name"
 msgid "Skills"
 msgstr "Навыки"
 
-#: core/models.py:23
+#: core/models.py:21
 msgctxt "Vacancy field"
 msgid "Source"
 msgstr "Источник"
 
-#: core/models.py:25
+#: core/models.py:23
 msgctxt "Vacancy field"
 msgid "ID in source system"
 msgstr "ID в источнике"
 
-#: core/models.py:27
+#: core/models.py:25
 msgctxt "Vacancy field"
 msgid "Description"
 msgstr "Описание"
 
-#: core/models.py:30
+#: core/models.py:28
 msgctxt "Vacancy field"
 msgid "Skills"
 msgstr "Навыки"
 
-#: core/models.py:33
+#: core/models.py:31
 msgctxt "Vacancy verbose name"
 msgid "Vacancy"
 msgstr "Вакансия"
 
-#: core/models.py:34
+#: core/models.py:32
 msgctxt "Vacancy verbose plural name"
 msgid "Vacancies"
 msgstr "Вакансии"
+
+#: extraction/admin.py:25
+msgctxt "Term admin column name"
+msgid "Hits"
+msgstr "Количество попаданий"
+
+#: extraction/apps.py:10
+msgctxt "Application verbose name"
+msgid "Extraction"
+msgstr "Извлечение данных"
+
+#: extraction/models.py:10
+msgctxt "Term field"
+msgid "Name"
+msgstr "Название"
+
+#: extraction/models.py:12
+msgctxt "Term field"
+msgid "Language code (ISO 639-1)"
+msgstr "Код языка (ISO 639-1)"
+
+#: extraction/models.py:15
+msgctxt "Term field"
+msgid "Vacancies"
+msgstr "Вакансии"
+
+#: extraction/models.py:18
+msgctxt "Term verbose name"
+msgid "Term"
+msgstr "Терм"
+
+#: extraction/models.py:19
+msgctxt "Term verbose plural name"
+msgid "Terms"
+msgstr "Термы"
 
 #: hh/apps.py:10
 msgctxt "Application verbose name"

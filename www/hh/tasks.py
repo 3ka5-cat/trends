@@ -3,15 +3,21 @@
 from __future__ import unicode_literals, absolute_import
 from celery import Task
 from django.db import transaction
-from core.models import Vacancy, Skill
-from . import api
+from django.utils.html import strip_tags
+import langid
+from topia.termextract.extract import TermExtractor as EnglishTermExtractor
+from rutermextract import TermExtractor as RussianTermExtractor
 from celery_conf import app as celery_app
+from core.models import Vacancy, Skill
+from extraction.models import Term
+from . import api
 
 
 class CollectingTask(Task):
     source = 'hh.ru'
     new_vacancies = []
     unique_skills = {}
+    unique_terms = {}
 
     def run(self, *args, **kwargs):
         self.collect_data()
@@ -37,6 +43,9 @@ class CollectingTask(Task):
                 new_vacancy = client.get_vacancy(new_vacancy_id)
                 self.transform_data(new_vacancy)
 
+        # extract additional data
+        self.extract_data()
+
         # save collected data
         self.store_data()
 
@@ -50,29 +59,48 @@ class CollectingTask(Task):
         # store interesting data for each vacancy
         self.new_vacancies.append({
             'external_id': vacancy['id'],
-            'description': vacancy['description'],
+            'description': strip_tags(vacancy['description']),
             })
         # collect data about related vacancies for each skill
         for skill in vacancy['key_skills']:
             skill_name = skill['name']
             if skill_name not in self.unique_skills.keys():
-                self.unique_skills[skill_name] = []
-            self.unique_skills[skill_name].append(vacancy['id'])
+                self.unique_skills[skill_name] = set()
+            self.unique_skills[skill_name].add(vacancy['id'])
+
+    def extract_data(self):
+        # extract new interesting data from each vacancy
+        extractors = {'ru': RussianTermExtractor(),
+                      'en': EnglishTermExtractor()}
+        for vacancy in self.new_vacancies:
+            extractor = extractors[langid.classify(vacancy['description'])[0]]
+            for item in extractor(vacancy['description']):
+                term = item.normalized if isinstance(extractor, RussianTermExtractor) else item[0]
+                if term not in self.unique_terms.keys():
+                    self.unique_terms[term] = set()
+                self.unique_terms[term].add(vacancy['external_id'])
 
     def store_data(self):
-        # save batch of new vacancies and update counters of skills mentioned in this vacancies
+        # save batch of new vacancies, skills and terms
         with transaction.atomic():
             Vacancy.objects.bulk_create(map(lambda vacancy: Vacancy(source=self.source,
                                                                     external_id=vacancy['external_id'],
                                                                     description=vacancy['description']),
                                             self.new_vacancies))
 
+            # TODO: how to bulk_create not existing skills and terms
+            # and update constraints of existing effectively?
             ThroughModel = Vacancy.skills.through
             for skill, vacancies in self.unique_skills.items():
                 skill, created = Skill.objects.get_or_create(name=skill)
-                skill.hits += len(vacancies)
-                skill.save()
                 ThroughModel.objects.bulk_create(map(lambda vacancy: ThroughModel(skill_id=skill.id,
+                                                                                  vacancy_id=vacancy.id),
+                                                     Vacancy.objects.filter(source=self.source,
+                                                                            external_id__in=vacancies)))
+            ThroughModel = Term.vacancies.through
+            for term, vacancies in self.unique_terms.items():
+                term, created = Term.objects.get_or_create(name=term, language=langid.classify(term)[0])
+                ThroughModel.objects.bulk_create(map(lambda vacancy: ThroughModel(term_id=term.id,
                                                                                   vacancy_id=vacancy.id),
                                                      Vacancy.objects.filter(source=self.source,
                                                                             external_id__in=vacancies)))
