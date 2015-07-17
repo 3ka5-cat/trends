@@ -73,12 +73,17 @@ class CollectingTask(Task):
         extractors = {'ru': RussianTermExtractor(),
                       'en': EnglishTermExtractor()}
         for vacancy in self.new_vacancies:
-            extractor = extractors[langid.classify(vacancy['description'])[0]]
+            language = langid.classify(vacancy['description'])[0]
+            extractor = extractors[language] if language in extractors.keys() else extractors['ru']
             for item in extractor(vacancy['description']):
                 term = item.normalized if isinstance(extractor, RussianTermExtractor) else item[0]
-                if term not in self.unique_terms.keys():
-                    self.unique_terms[term] = set()
-                self.unique_terms[term].add(vacancy['external_id'])
+                # TODO: implement custom blacklist filters for extractors
+                # TODO: may be use smth like elastic search for filtering?
+                # TODO: implement whitelist filters (from existing skills)
+                if not Term.objects.blacklisted().filter(name=term).exists():
+                    if term not in self.unique_terms.keys():
+                        self.unique_terms[term] = set()
+                    self.unique_terms[term].add(vacancy['external_id'])
 
     def store_data(self):
         # save batch of new vacancies, skills and terms
@@ -88,22 +93,15 @@ class CollectingTask(Task):
                                                                     description=vacancy['description']),
                                             self.new_vacancies))
 
-            # TODO: how to bulk_create not existing skills and terms
-            # and update constraints of existing effectively?
-            ThroughModel = Vacancy.skills.through
             for skill, vacancies in self.unique_skills.items():
-                skill, created = Skill.objects.get_or_create(name=skill)
-                ThroughModel.objects.bulk_create(map(lambda vacancy: ThroughModel(skill_id=skill.id,
-                                                                                  vacancy_id=vacancy.id),
-                                                     Vacancy.objects.filter(source=self.source,
-                                                                            external_id__in=vacancies)))
-            ThroughModel = Term.vacancies.through
+                vacancies_qs = Vacancy.objects.filter(source=self.source, external_id__in=vacancies)
+                Skill.objects.create_or_update_with_vacancies(name=skill, vacancies_qs=vacancies_qs)
+
             for term, vacancies in self.unique_terms.items():
-                term, created = Term.objects.get_or_create(name=term, language=langid.classify(term)[0])
-                ThroughModel.objects.bulk_create(map(lambda vacancy: ThroughModel(term_id=term.id,
-                                                                                  vacancy_id=vacancy.id),
-                                                     Vacancy.objects.filter(source=self.source,
-                                                                            external_id__in=vacancies)))
+                vacancies_qs = Vacancy.objects.filter(source=self.source, external_id__in=vacancies)
+                Term.objects.create_or_update_with_vacancies(name=term, language=langid.classify(term)[0],
+                                                             vacancies_qs=vacancies_qs)
+
 
 
 collect = celery_app.tasks[CollectingTask.name]

@@ -7,8 +7,8 @@ from django.utils.translation import pgettext_lazy
 from .models import Skill, Vacancy
 
 
-class VacanciesInline(admin.TabularInline):
-    model = Vacancy.skills.through
+class SkillsInline(admin.TabularInline):
+    model = Skill.vacancies.through
     extra = 0
 
 
@@ -16,11 +16,11 @@ class VacanciesInline(admin.TabularInline):
 class SkillAdmin(admin.ModelAdmin):
     list_display = ('name', 'hits', )
     search_fields = ('name', )
-    inlines = (VacanciesInline, )
+    filter_horizontal = ('vacancies', )
 
     def queryset(self, request):
         qs = super(SkillAdmin, self).queryset(request)
-        qs = qs.annotate(hits=models.Count('vacancy'))
+        qs = qs.annotate(hits=models.Count('vacancies'))
         return qs
 
     def hits(self, obj):
@@ -35,4 +35,4 @@ class VacancyAdmin(admin.ModelAdmin):
     list_display = ('source', 'external_id', )
     list_filter = ('source', )
     search_fields = ('external_id', )
-    filter_horizontal = ('skills', )
+    inlines = (SkillsInline, )
