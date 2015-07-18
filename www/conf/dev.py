@@ -8,7 +8,7 @@ SECRET_KEY = get_env_variable('TRENDS_DEV_SECRET_KEY')
 
 DATABASES = {'default': dj_database_url.config()}
 
-LOGGING = create_logging_dict('logs')
+# LOGGING = create_logging_dict('../logs')
 
 ALLOWED_HOSTS = ['hh-trends.herokuapp.com', 'www.hh-trends.herokuapp.com', ]
 
