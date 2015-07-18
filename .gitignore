@@ -28,7 +28,8 @@ www/public/static
 # local config
 www/conf/local.py
 
-logs
+logs/*
+!logs/init
 *.mo
 
 www/dump
