@@ -32,7 +32,7 @@ class SkillAdmin(admin.ModelAdmin):
 
 @admin.register(Vacancy)
 class VacancyAdmin(admin.ModelAdmin):
-    list_display = ('source', 'external_id', )
+    list_display = ('name', 'source', 'external_id', )
     list_filter = ('source', )
-    search_fields = ('external_id', )
+    search_fields = ('name', 'external_id', )
     inlines = (SkillsInline, )

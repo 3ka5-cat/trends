@@ -21,6 +21,10 @@ class CollectingTask(Task):
 
     def run(self, *args, **kwargs):
         self.collect_data()
+        # extract additional data
+        self.extract_data()
+        # save collected data
+        self.store_data()
 
     def collect_data(self):
         client = api.Client()
@@ -43,12 +47,6 @@ class CollectingTask(Task):
                 new_vacancy = client.get_vacancy(new_vacancy_id)
                 self.transform_data(new_vacancy)
 
-        # extract additional data
-        self.extract_data()
-
-        # save collected data
-        self.store_data()
-
     def filter_data(self, vacancy_ids):
         # filter only not existing ids
         existing_vacancies = Vacancy.objects.filter(source=self.source,
@@ -59,6 +57,7 @@ class CollectingTask(Task):
         # store interesting data for each vacancy
         self.new_vacancies.append({
             'external_id': vacancy['id'],
+            'name': vacancy['name'],
             'description': strip_tags(vacancy['description']),
             })
         # collect data about related vacancies for each skill
@@ -89,6 +88,7 @@ class CollectingTask(Task):
         # save batch of new vacancies, skills and terms
         with transaction.atomic():
             Vacancy.objects.bulk_create(map(lambda vacancy: Vacancy(source=self.source,
+                                                                    name=vacancy['name'],
                                                                     external_id=vacancy['external_id'],
                                                                     description=vacancy['description']),
                                             self.new_vacancies))

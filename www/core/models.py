@@ -8,6 +8,8 @@ from django.utils.translation import pgettext_lazy
 class Vacancy(models.Model):
     source = models.CharField(verbose_name=pgettext_lazy('Vacancy field', 'Source'),
                               max_length=255)
+    name = models.CharField(verbose_name=pgettext_lazy('Vacancy field', 'Name'),
+                            blank=True, max_length=255)
     external_id = models.CharField(verbose_name=pgettext_lazy('Vacancy field', 'ID in source system'),
                                    max_length=255)
     description = models.TextField(verbose_name=pgettext_lazy('Vacancy field', 'Description'),
