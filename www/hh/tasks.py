@@ -5,10 +5,10 @@ from celery import Task
 from django.db import transaction
 from django.utils.html import strip_tags
 import langid
-from topia.termextract.extract import TermExtractor as EnglishTermExtractor
-from rutermextract import TermExtractor as RussianTermExtractor
 from celery_conf import app as celery_app
 from core.models import Vacancy, Skill
+from extraction.filters import BlackListFilter
+from extraction.extractors import RussianTermExtractor, EnglishTermExtractor
 from extraction.models import Term
 from . import api
 
@@ -69,20 +69,17 @@ class CollectingTask(Task):
 
     def extract_data(self):
         # extract new interesting data from each vacancy
-        extractors = {'ru': RussianTermExtractor(),
-                      'en': EnglishTermExtractor()}
+        extractors = {'ru': RussianTermExtractor(filter=BlackListFilter()),
+                      'en': EnglishTermExtractor(filter=BlackListFilter())}
         for vacancy in self.new_vacancies:
             language = langid.classify(vacancy['description'])[0]
             extractor = extractors[language] if language in extractors.keys() else extractors['ru']
             for item in extractor(vacancy['description']):
                 term = item.normalized if isinstance(extractor, RussianTermExtractor) else item[0]
-                # TODO: implement custom blacklist filters for extractors
                 # TODO: may be use smth like elastic search for filtering?
-                # TODO: implement whitelist filters (from existing skills)
-                if not Term.objects.blacklisted().filter(name=term).exists():
-                    if term not in self.unique_terms.keys():
-                        self.unique_terms[term] = set()
-                    self.unique_terms[term].add(vacancy['external_id'])
+                if term not in self.unique_terms.keys():
+                    self.unique_terms[term] = set()
+                self.unique_terms[term].add(vacancy['external_id'])
 
     def store_data(self):
         # save batch of new vacancies, skills and terms
