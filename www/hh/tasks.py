@@ -20,6 +20,7 @@ class CollectingTask(Task):
     unique_terms = {}
 
     def run(self, *args, **kwargs):
+        langid.set_languages(['ru', 'en'])
         self.collect_data()
         # extract additional data
         self.extract_data()
