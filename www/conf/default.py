@@ -262,3 +262,4 @@ CELERY_ACCEPT_CONTENT = ['json']
 import djcelery
 djcelery.setup_loader()
 CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
+CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
