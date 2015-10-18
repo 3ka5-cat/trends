@@ -15,6 +15,7 @@
 .idea
 
 # testing
+.cache
 .coverage
 coverage.xml
 nosetests.xml

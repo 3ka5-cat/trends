@@ -140,10 +140,12 @@ INSTALLED_APPS = [
     'django_extensions',
     # 'debug_toolbar',
     'raven.contrib.django.raven_compat',
+    'djrill',
+    'djcelery',
 
     'core',
     'extraction',
-    'hh',
+    'collection',
     'utils',
 ]
 
@@ -170,7 +172,7 @@ def create_logging_dict(root):
         'disable_existing_loggers': False,
         'formatters': {
             'verbose': {
-                'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+                'format': '%(levelname)s %(asctime)s %(filename)s:%(lineno)d %(message)s'
             },
             'simple': {
                 'format': '%(levelname)s %(message)s'
@@ -223,6 +225,11 @@ def create_logging_dict(root):
                 'level': 'INFO',
                 'propagate': False,
             },
+            'celery': {
+                'handlers': ['console'],
+                'level': 'DEBUG',
+                'propagate': True
+            },
         }
     }
 
@@ -230,6 +237,9 @@ def create_logging_dict(root):
 # debug toolbar settings
 DEBUG_TOOLBAR_PATCH_SETTINGS = False
 INTERNAL_IPS = ('127.0.0.1',)
+
+# djrill
+EMAIL_BACKEND = 'djrill.mail.backends.djrill.DjrillBackend'
 
 # raven settings (for Sentry)
 RAVEN_CONFIG = {
@@ -249,9 +259,6 @@ LOCALE_PATHS = (
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_ACCEPT_CONTENT = ['json']
 
-CELERYBEAT_SCHEDULE = {
-    'poll-hh': {
-        'task': 'hh.tasks.CollectingTask',
-        'schedule': crontab(hour=0, minute=0),
-    },
-}
+import djcelery
+djcelery.setup_loader()
+CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'

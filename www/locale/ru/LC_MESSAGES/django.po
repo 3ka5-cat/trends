@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-14 02:20+0300\n"
+"POT-Creation-Date: 2015-10-18 14:27+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: www/conf/default.py:241
+#: www/conf/default.py:251
 msgctxt "Language setting value"
 msgid "Russian"
 msgstr "Русский"
@@ -143,8 +143,3 @@ msgstr "Терм"
 msgctxt "Term verbose plural name"
 msgid "Terms"
 msgstr "Термы"
-
-#: www/hh/apps.py:10
-msgctxt "Application verbose name"
-msgid "hh.ru"
-msgstr ""

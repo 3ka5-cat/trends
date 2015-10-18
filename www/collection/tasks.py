@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals, absolute_import
+import pprint
 from celery import Task
+from celery.utils.log import get_task_logger
 from django.db import transaction
+from django.core.mail import send_mail
 from django.utils.html import strip_tags
 import langid
 from celery_conf import app as celery_app
@@ -12,12 +15,21 @@ from extraction.extractors import RussianTermExtractor, EnglishTermExtractor
 from extraction.models import Term
 from . import api
 
+logger = get_task_logger(__name__)
+
 
 class CollectingTask(Task):
     source = 'hh.ru'
     new_vacancies = []
     unique_skills = {}
     unique_terms = {}
+
+    existed_vacancies = 0
+    existed_skills = 0
+    created_skills = 0
+    existed_terms = 0
+    created_terms = 0
+    blacklisted_terms = 0
 
     def run(self, *args, **kwargs):
         langid.set_languages(['ru', 'en'])
@@ -26,6 +38,8 @@ class CollectingTask(Task):
         self.extract_data()
         # save collected data
         self.store_data()
+        # build report
+        return self.report()
 
     def collect_data(self):
         client = api.Client()
@@ -33,6 +47,7 @@ class CollectingTask(Task):
         per_page = api.MAXIMUM_PER_PAGE
         pages_remaining = True  # for the first time, `do..while` where are you?
         while requested_items < api.MAXIMUM_RECIEVED_ITEMS and pages_remaining:
+            logger.debug('Collecting page {}'.format(page))
             search_results = client.search_vacancies(text='Python', area=2, specialization=1,
                                                      page=page, per_page=per_page)
             requested_items = search_results['per_page'] * (search_results['page'] + 1)
@@ -85,6 +100,10 @@ class CollectingTask(Task):
     def store_data(self):
         # save batch of new vacancies, skills and terms
         with transaction.atomic():
+            self.existed_vacancies = Vacancy.objects.count()
+            self.existed_skills = Skill.objects.count()
+            self.existed_terms = Term.objects.count()
+            self.blacklisted_terms = Term.objects.blacklisted().count()
             Vacancy.objects.bulk_create(map(lambda vacancy: Vacancy(source=self.source,
                                                                     name=vacancy['name'],
                                                                     external_id=vacancy['external_id'],
@@ -93,13 +112,31 @@ class CollectingTask(Task):
 
             for skill, vacancies in self.unique_skills.items():
                 vacancies_qs = Vacancy.objects.filter(source=self.source, external_id__in=vacancies)
-                Skill.objects.create_or_update_with_vacancies(name=skill, vacancies_qs=vacancies_qs)
+                _, created = Skill.objects.create_or_update_with_vacancies(name=skill, vacancies_qs=vacancies_qs)
+                if created:
+                    self.created_skills += 1
 
             for term, vacancies in self.unique_terms.items():
                 vacancies_qs = Vacancy.objects.filter(source=self.source, external_id__in=vacancies)
-                Term.objects.create_or_update_with_vacancies(name=term, language=langid.classify(term)[0],
-                                                             vacancies_qs=vacancies_qs)
+                _, created = Term.objects.create_or_update_with_vacancies(name=term, language=langid.classify(term)[0],
+                                                                          vacancies_qs=vacancies_qs)
+                if created:
+                    self.created_terms += 1
 
+    def report(self):
+        report = {
+            'source': self.source,
+            'vacancies_existed': self.existed_vacancies,
+            'vacancies_created': len(self.new_vacancies),
+            'skills_created': self.created_skills,
+            'skills_existed': self.existed_skills,
+            'terms_created': self.created_terms,
+            'terms_existed': self.existed_terms,
+            'terms_blacklisted': self.blacklisted_terms,
+        }
+        send_mail('Collecting report', pprint.pformat(report, indent=4), 'report@trends.com',
+                  ['antik.fnt@gmail.com'], fail_silently=False)
+        return report
 
 
 collect = celery_app.tasks[CollectingTask.name]
