@@ -5,6 +5,20 @@ from django.db import models, transaction
 from django.utils.translation import pgettext_lazy
 
 
+class SearchQuery(models.Model):
+    text = models.CharField(verbose_name=pgettext_lazy('Search query field', 'Text to search'),
+                            max_length=255)
+    note = models.TextField(verbose_name=pgettext_lazy('Search query field', 'Note'),
+                            blank=True)
+
+    class Meta:
+        verbose_name = pgettext_lazy('Search query verbose name', 'Search query')
+        verbose_name_plural = pgettext_lazy('Search query verbose plural name', 'Search queries')
+
+    def __unicode__(self):
+        return '{}'.format(self.text)
+
+
 class Vacancy(models.Model):
     source = models.CharField(verbose_name=pgettext_lazy('Vacancy field', 'Source'),
                               max_length=255)

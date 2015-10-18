@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-18 14:27+0300\n"
+"POT-Creation-Date: 2015-10-18 14:49+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -35,51 +35,71 @@ msgid "Core"
 msgstr "Ядро"
 
 #: www/core/models.py:9
+msgctxt "Search query field"
+msgid "Text to search"
+msgstr "Текст для поиска"
+
+#: www/core/models.py:11
+msgctxt "Search query field"
+msgid "Note"
+msgstr "Заметка"
+
+#: www/core/models.py:15
+msgctxt "Search query verbose name"
+msgid "Search query"
+msgstr "Поисковый запрос"
+
+#: www/core/models.py:16
+msgctxt "Search query verbose plural name"
+msgid "Search queries"
+msgstr "Поисковые запросы"
+
+#: www/core/models.py:23
 msgctxt "Vacancy field"
 msgid "Source"
 msgstr "Источник"
 
-#: www/core/models.py:11
+#: www/core/models.py:25
 msgctxt "Vacancy field"
 msgid "Name"
 msgstr "Название"
 
-#: www/core/models.py:13
+#: www/core/models.py:27
 msgctxt "Vacancy field"
 msgid "ID in source system"
 msgstr "ID в источнике"
 
-#: www/core/models.py:15
+#: www/core/models.py:29
 msgctxt "Vacancy field"
 msgid "Description"
 msgstr "Описание"
 
-#: www/core/models.py:19
+#: www/core/models.py:33
 msgctxt "Vacancy verbose name"
 msgid "Vacancy"
 msgstr "Вакансия"
 
-#: www/core/models.py:20
+#: www/core/models.py:34
 msgctxt "Vacancy verbose plural name"
 msgid "Vacancies"
 msgstr "Вакансии"
 
-#: www/core/models.py:41
+#: www/core/models.py:55
 msgctxt "Skill field"
 msgid "Name"
 msgstr "Название"
 
-#: www/core/models.py:44
+#: www/core/models.py:58
 msgctxt "Skill field"
 msgid "Vacancies"
 msgstr "Вакансии"
 
-#: www/core/models.py:48
+#: www/core/models.py:62
 msgctxt "Skill verbose name"
 msgid "Skill"
 msgstr "Навык"
 
-#: www/core/models.py:49
+#: www/core/models.py:63
 msgctxt "Skill verbose plural name"
 msgid "Skills"
 msgstr "Навыки"

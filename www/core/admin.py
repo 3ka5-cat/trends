@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from django.contrib import admin
 from django.db import models
 from django.utils.translation import pgettext_lazy
-from .models import Skill, Vacancy
+from .models import Skill, Vacancy, SearchQuery
 
 
 class SkillsInline(admin.TabularInline):
@@ -36,3 +36,9 @@ class VacancyAdmin(admin.ModelAdmin):
     list_filter = ('source', )
     search_fields = ('name', 'external_id', )
     inlines = (SkillsInline, )
+
+
+@admin.register(SearchQuery)
+class SearchQueryAdmin(admin.ModelAdmin):
+    list_display = ('text', )
+    search_fields = ('text', 'note', )

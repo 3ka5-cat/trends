@@ -9,7 +9,7 @@ from django.core.mail import send_mail
 from django.utils.html import strip_tags
 import langid
 from celery_conf import app as celery_app
-from core.models import Vacancy, Skill
+from core.models import Vacancy, Skill, SearchQuery
 from extraction.filters import BlackListFilter
 from extraction.extractors import RussianTermExtractor, EnglishTermExtractor
 from extraction.models import Term
@@ -24,6 +24,7 @@ class CollectingTask(Task):
     unique_skills = {}
     unique_terms = {}
 
+    search_queries = []
     existed_vacancies = 0
     existed_skills = 0
     created_skills = 0
@@ -33,22 +34,24 @@ class CollectingTask(Task):
 
     def run(self, *args, **kwargs):
         langid.set_languages(['ru', 'en'])
-        self.collect_data()
-        # extract additional data
-        self.extract_data()
-        # save collected data
-        self.store_data()
+        for query in SearchQuery.objects.all():
+            self.collect_data(query)
+            # extract additional data
+            self.extract_data()
+            # save collected data
+            self.store_data()
+            self.search_queries.append(query.text)
         # build report
         return self.report()
 
-    def collect_data(self):
+    def collect_data(self, search_query):
         client = api.Client()
         requested_items = page = 0
         per_page = api.MAXIMUM_PER_PAGE
         pages_remaining = True  # for the first time, `do..while` where are you?
         while requested_items < api.MAXIMUM_RECIEVED_ITEMS and pages_remaining:
             logger.debug('Collecting page {}'.format(page))
-            search_results = client.search_vacancies(text='Python', area=2, specialization=1,
+            search_results = client.search_vacancies(text=search_query.text, area=2, specialization=1,
                                                      page=page, per_page=per_page)
             requested_items = search_results['per_page'] * (search_results['page'] + 1)
             pages_remaining = search_results['found'] - requested_items
@@ -126,6 +129,7 @@ class CollectingTask(Task):
     def report(self):
         report = {
             'source': self.source,
+            'search_queries': self.search_queries,
             'vacancies_existed': self.existed_vacancies,
             'vacancies_created': len(self.new_vacancies),
             'skills_created': self.created_skills,
